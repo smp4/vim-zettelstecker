@@ -1,10 +1,14 @@
 # vim-zettelstecker
 
-*A vim plugin for a zettelkasten*
+*Bringing the power of vim to the zettelkasten.*
 
 ## What is a Zettelkasten?
 
 See (zettelkasten.de)[https://zettelkasten.de/].
+
+## Features
+
+- 
 
 ## Installation
 
@@ -36,6 +40,12 @@ This package is intended for my personal use. Feel free to use it for yourself, 
 - Move all zettel related mappings to the plugin
 - Copy all markdown settings over as well to the zettel filetype
 - initalise repo
+- window management: <https://vimways.org/2019/writing-vim-plugin/>
+- not obliterating user maps (if somethign can be done with a command, use a command. dont force your maps on users): <https://vim.fandom.com/wiki/How_to_write_a_plugin>
+- backlinks from here?: <https://github.com/Aarleks/zettel.vim>
+- see link to sam wallage: <https://github.com/Aarleks/zettel.vim>
+- graph <https://github.com/StotoV/zettel/blob/master/plugin/zettel.vim>
+
 
 ## License
 
