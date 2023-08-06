@@ -25,9 +25,4 @@
 "     <...zero or more other frontmatter variables...>
 "     ---
 
-autocmd BufRead,BufNewFile *
-  \ if &ft == 'markdown'
-    \ if search("^---\_$\_.*filetype: zettel\_.*---\_$")
-      \ set ft=zettel
-    \ endif
-  \ endif
+autocmd BufRead,BufNewFile * if &ft == 'markdown' | if search("^---\_$\_.*filetype: zettel\_.*---\_$") | set ft=zettel | endif | endif
