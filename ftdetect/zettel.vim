@@ -1,8 +1,8 @@
 " Expects zettels to be markdown files with a a YAML frontmatter block that
 " includes the <filetype: zettel> variable. 
 "
-" The files must havea legal markdown file extension (or at least a markdown
-" file extension that vim natively maps to the 'markdown' filetype).
+" The files must have a markdown file extension that vim natively maps to 
+" the 'markdown' filetype).
 "
 " See <https://jekyllrb.com/docs/front-matter/> for guidance on correct
 " formatting of a YAML frontmatter block. 
@@ -24,5 +24,14 @@
 "     filetype: zettel
 "     <...zero or more other frontmatter variables...>
 "     ---
+"
+" Note double backslashes due to double quotes in search().
 
-autocmd BufRead,BufNewFile * if &ft == 'markdown' | if search("^---\_$\_.*filetype: zettel\_.*---\_$") | set ft=zettel | endif | endif
+autocmd BufRead,BufNewFile * call CheckZettel()
+fun CheckZettel()
+  if &ft == 'markdown'
+    if search("^---\\_$\\_.*filetype: zettel\\_.*---\\_$") == 1
+      set ft=zettel
+    endif
+  endif
+endfun
