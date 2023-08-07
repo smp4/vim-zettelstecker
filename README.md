@@ -140,6 +140,24 @@ These are overwritten by any `vim-markdown` option variables set in your `.vimrc
 - Footnotes, might require pandoc or MyST flavoured Markdown though.
 - squish vsplits left and right. Default - assume main authoring pane is the left most vsplit. assume workflow uses vsplits. Default behaviour is keep minimum of mess on the left. Individual commands to squish a window left or right (resize it to only a couple columns, resize others to evenly fill remaining space). A focus command executed on any vsplit that squishes anything to the right, to the right, and anything to the left to the left. Another command "focus main" that squishes everything except left most pane. 
 - everything is a command, that then gets mapped to the standard "`<leader>nx`" where x is the mapping. 
+- Exposes the plugin's functions for use as commands in Vim.
+- run_recognise_zettel_filetype
+- run_backlink_generation (should it indicate where the backlinks arrive in this zettel?)
+- run_publish
+- run_open_any_link_part
+- run_open_link_side_window
+- run_copy_sentence_link
+- run_copy_section_link
+- run_copy_zettel_link
+- run_go_to_index_zettel
+- run_create_new_zettel
+- run_add_citation_from_zotero
+- run_generate_tags
+- run_search_tags this is maybe an fzf function?
+- run_update_lastupdated_on_write
+- run_cycle_through_links_forwards (l, or t?)
+- run_cycle_through_links_backwards (L, or T?)
+
 
 ## Usage and Support
 
