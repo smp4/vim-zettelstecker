@@ -32,12 +32,12 @@ Feature list:
 For the core vim-only experience, all you need are the Vim plugins. Install using your choice of plugin manager:
 
 Plug:
+```
+Plug 'preservim/vim-markdown' | Plug 'smp4/vim-zettelstecker'
+```
+`vim-plug` does not manage dependencies. Putting `vim-zettelstecker` after `vim-markdown` allows the former to overwrite any mappings created by the latter.
 
-```
-Plug 'smp4/vim-zettelstecker'
-Plug 'preservim/vim-markdown'
-```
-Pathogen: 
+Pathogen (untested): 
 ```
 git clone https://github.com/smp4/vim-zettelstecker ~/.vim/bundle/vim-zettelstecker
 git clone https://github.com/preservim/vim-markdown ~/.vim/bundle/vim-markdown
@@ -138,6 +138,8 @@ These are overwritten by any `vim-markdown` option variables set in your `.vimrc
 - Landing page is (left) index.md and (right) either keys.md, reading.md or a blank buffer.
 - move keys.md to plugin documentation, since they are all vim keys and not zettelkasten keys.
 - Footnotes, might require pandoc or MyST flavoured Markdown though.
+- squish vsplits left and right. Default - assume main authoring pane is the left most vsplit. assume workflow uses vsplits. Default behaviour is keep minimum of mess on the left. Individual commands to squish a window left or right (resize it to only a couple columns, resize others to evenly fill remaining space). A focus command executed on any vsplit that squishes anything to the right, to the right, and anything to the left to the left. Another command "focus main" that squishes everything except left most pane. 
+- everything is a command, that then gets mapped to the standard "`<leader>nx`" where x is the mapping. 
 
 ## Usage and Support
 
