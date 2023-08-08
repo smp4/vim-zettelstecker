@@ -1,13 +1,12 @@
 # vim-zettelstecker
 
-*Bringing the power of vim to the zettelkasten.*
+> Bringing the power of vim to the zettelkasten.
 
 ## What is a Zettelkasten?
 
 See (zettelkasten.de)[https://zettelkasten.de/].
 
 ## Features
-
 `vim-zettelstecker` provides tools to reduce the friction of writing, maintaining and navigating a Zettelkasten in Vim. Optional interfaces to external services add some extra functionality for navigating (contextual backlinks, zettelgraph), adding citations from a reference source and publishing your Kasten to external formats (html, pdf or anything else supported by `pandoc`).
 
 The core functionality of writing and basic navigation through the Zettelkasten is provided by a superset of the markdown tools offered by `vim-markdown`. 
@@ -33,19 +32,20 @@ For the core vim-only experience, all you need are the Vim plugins. Install usin
 
 Plug:
 ```
-Plug 'preservim/vim-markdown' | Plug 'smp4/vim-zettelstecker'
+Plug 'godlygeek/tabular' | 'preservim/vim-markdown' | Plug 'smp4/vim-zettelstecker'
 ```
-`vim-plug` does not manage dependencies. Putting `vim-zettelstecker` after `vim-markdown` allows the former to overwrite any mappings created by the latter.
+
+`vim-plug` does not manage dependencies. `vim-zettelstecker` relies on `vim-markdown` which relise on `tabular`. The order in your `Plug` listing matters: It allows latterly loaded plugins to overwrite any mappings created by any plugins loaded before them.
 
 Pathogen (untested): 
 ```
-git clone https://github.com/smp4/vim-zettelstecker ~/.vim/bundle/vim-zettelstecker
-git clone https://github.com/preservim/vim-markdown ~/.vim/bundle/vim-markdown
+cd ~/.vim/bundle
+git clone https://github.com/preservim/vim-markdown 
+git clone https://github.com/smp4/vim-zettelstecker
 ```
 
 This gets you the markdown syntax highlighting and basic navigation through your zettelkasten within Vim.
 
-TODO: TBC if install order matters, or if vim-zettelstecker can manage installation of vim-markdown.
 
 ## Goals
 
@@ -71,6 +71,7 @@ Maintaining a Zettelkasten is primarily about *writing text*, and about *frictio
 * Your Zettelkasten is either at `$HOME/zettelkasten` or you have an environment variable `$ZETTEL_DIR` set to an alternate path. TODO: 
 * All zettels are written in Markdown (either CommonMark or Github Flavored Markdown), with a Markdown file extension recognised by vim (*.markdown,*.mdown,*.mkd,*.mkdn,*.mdwn,*.md). 
 * There is an `index.md` file in the zettel directory, which is the landing page each time you start up the Zettelkasten.
+* Once created a Zettel never gets deleted, and never gets renamed.
 
 ## Installing Optional Dependencies
 
@@ -86,15 +87,121 @@ Although it isn't mandatory to install `RipGrep` and `ctags` with `fzf`, to get 
 
 ### Pandoc
 
+* enable `backtick_code_blocks`
+
 ### Python
 
+## User Guide
+
+### Key mappings
+
+All default mapped commands in Normal mode begin with `<leader>`. It would have been nice to follow with `z` for **z**ettel, but this character is already wired to vim fold functions. `n` for **n**ote, is fine, plus at least on my keyboard, the `n` character is close to `,` which is my leader. This allows a quick two character double-tap with the same hand.
+
+In short: all `vim-zettelstecker` key mappings begin with `<leader>n`.
+
+### Markdown
+
+See the [markdown guide](https://www.markdownguide.org/basic-syntax/#links).
+
+### Links
+
+Always create links to locations in the Zettelkasten at the most granular level possible. This normally means creating a destination anchor at the sentence level. This keeps the relationship from one idea to another atomic. As an example of an anti-pattern, consider if links were created only to headers, or to identifiers (like `{#foo}` below):
+
+```markdown
+## My Heading {#foo}
+```
+
+What if some days after creating a link into `My heading`, you develop the idea under `My Heading` further, perhaps significantly, but that new development has no relationship to the backlinked Zettel? You need to refactor the backlinked Zettel to link more granularly to the intended idea. 
+
+Or, what if you decide `My Heading` was a bad description, and now you want to change the heading? Again, the backlinked Zettel needs refactoring. 
+
+It is tempting to use identifiers like `{#foo}` to have some non-changing identifier to avoid refactoring backlinked zettels irrespective of changes to the heading text. This would be a bad idea, because changing the heading name is a good indicator that the ideas contained within have changed, in which case although an annoyance, refactoring incoming links is a good thing. The prompt is welcome.
+
+The above problems are even worse for links to a Zettel itself (or the title of a Zettel), much less the sub-heading example given here. 
+
+All of these cases could have been avoided by granular anchor links to sentences describing the related idea. `vim-zettelstecker` provides commands and default keymaps to create links at the sentence, heading and Zettel level, however the sentence option should be used in most cases.
+
+**Example `link-sentence`:**
+
+> A zettel, let's call it the *primary* zettel, needs to have a link to an idea in a different *secondary* zettel. Make the buffer of the secondary zettel active and find the location of the idea to reference. Let's say we have found a good sentence.
+>
+> In normal mode, move the cursor anywhere in the sentence, press `<leader>nls` for `link-sentence`. This will create an anchor in the sentence, and copy an explicit markdown link to the TODO register.
+>
+> Make the buffer of the primary zettel active. Move the cursor to the location you'd like to place the link. In Normal mode, paste the markdown link with TODO. The cursor will be placed ready for you to type the visible text of the link. Enter Insert mode, give the text, and you're done.
+
+Anchors have the form `{#ddd}` where d is a digit from 0-9. This means any single Zettel can have at most 1000 anchors. When creating an anchor, `vim-zettelstecker` will search the Zettel for any other anchors, find the highest number, and create the new anchor with `{#ddd+1}`. If there are gaps because old anchors were deleted, they will not be filled.
+
+**Example `link-heading`:**
+
+> Make the buffer of the secondary zettel active. 
+>
+> In normal mode, position the cursor anywhere in the heading or in the text below the heading. Press `<leader>nlh` for `link-heading`. This will copy an explicit markdown link to the TODO register.
+>
+> Make the buffer of the primary zettel active. Move the cursor to the location you'd like to place the link. In normal mode, paste the markdown link with TODO. The visible text of the link will be prepopulated with the text of the heading.
+
+Note that `link-heading` uses the explict header link format, referencing the header text itself.
+
+**Example `link-zettel`**
+
+> Make the buffer of the secondary zettel active.
+>
+> Position the cursor anywhere below the YAML frontmatter section. In normal mode, press `<leader>nlz` for `link-zettel`. This will copy an explicit markdown link to the TODO register.
+>
+> Make the buffer of the primary zettel active. Move the cursor to the location you'd like to place the link. In normal mode, paste the markdown link with TOOD. The visible text of the link will be prepopulated with the title of the Zettel as defined in the YAML frontmatter.
+
+`vim-zettelstecker` will only follow explicit header references both in vim, and in the default pandoc output. 
+
 ## Tips
+
+This section adds helpful vim zettelkasten workflow tips. Not all of them related to `vim-zettelstecker` directly, but they play nicely together.
 
 * Central reference source, stored with the Zettelkasten.
 * References everywhere: Zotero and syncthing
 * Publishing to static site with pandoc
 * shell alias to jump into zettelkasten from everywhere (vim, changedir, landing page)
 * Backups
+
+### Folding
+
+For general background on folding, read the folding section of the Vim user manual `:help usr_28`. 
+
+A useful workflow is to have markdown files (Zettels) already folded to level 2 headings (level 1 is the title of the Zettel) so that you immediately have an overview of the Zettel. 
+
+Bind `za` to `<space>` in your `.vimrc` (`nnoremap <space> za`) to toggle between open and close of a foldable section under the cursor. 
+
+Then move between the folds with the cursor, position where you want to read or edit, `<space>` to open and edit, when done, `<space>` to close again.
+
+Vim *really* slows down in Insert mode when automatic folds are turned on, since it is constantly recomputing where folds are as new text is added. [FastFold](https://github.com/Konfekt/FastFold) fixes this.
+
+A minimal setup for a Zettelkasten in your `.vimrc` (see the `FastFold` repo for more):
+
+```vimscript
+" vim-plug section
+Plug 'Konfekt/FastFold'
+
+" FastFold configuration 
+nmap zuz <Plug>(FastFoldUpdate)
+let g:fastfold_savehook = 1
+let g:fastfold_fold_command_suffixes = ['x','X','a','A','o','O','c','C','r','R','m','M','i','n','N']
+let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
+let g:markdown_folding = 1
+
+" vim-markdown configuration
+" Disable vim-markdown folding (personal preference: I prefer FastFold + the default vim markdown folding)
+let g:vim_markdown_folding_disabled = 1
+
+" native vim folding settings
+" Set foldlevel to collapse level 2+ headings
+autocmd FileType markdown set foldlevel=1
+```
+
+This:
+
+* Disables `vim-markdown` style markdown folding.
+* Update folds on all possible fold commands.
+* Also maps `zuz` to update folds.
+* Uses `expression` fold method for markdown (our zettels).
+
 
 ### Customising vim-markdown
 
@@ -103,12 +210,11 @@ By default, `vim-zettelstecker` turns on the following `vim-markdown` syntax ext
 * `g:vim_markdown_strikethrough` for strikethrough with two tildes `~~` for `pandoc` compatibility.
 * `g:vim_markdown_no_extensions_in_markdown` for GitHub wiki style links like `[link text](link-url)`.
 
-These additional `vim-markdown` extensions are also turned on by default:
+These additional `vim-markdown` extensions are also turned on by `vim-zettelstecker`:
 
 * `g:vim_markdown_math` to allow LaTeX math.
 * `g:vim_markdown_frontmatter` to highlight YAML front matter.
 
-These are overwritten by any `vim-markdown` option variables set in your `.vimrc` TODO. So if you want to modify `vim-markdown` behaviour while using `vim-zettelstecker` you can also set these variables there. 
 
 ### Publishing
 
@@ -118,9 +224,14 @@ These are overwritten by any `vim-markdown` option variables set in your `.vimrc
 * `strikeout`, this should also be compatible with Ghub Flavored Markdown. Use two tildes `~~`.
 * `tex_math_dollars`, escape math with two \$'s `$$`.
 
+## Known Bugs
+
+* If implemented, the tip on folding will fold the last line of YAML frontmatter and the blank lines beneath it. Not critical, but ugly.
+
 ## Todo
 
 - DONE zettel filetype in zettel metadata (put warning in dependencies)
+- Be kinder to users - allow them to decide which vim-markdown configuration options get overwritten by vim-zettelstecker.
 - template - daily log
 - Break zettelstecker into just core parts with no publishing, references, minimum dependencies, and zettelsteckdosen for everything.
 - how to extend `ge` in `vim-markdown` to open in the rightmost split, and open a new right split if there is only one window. can see how vim-markdown extends `gx` as a template.
