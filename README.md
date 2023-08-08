@@ -226,7 +226,7 @@ These additional `vim-markdown` extensions are also turned on by `vim-zettelstec
 
 ## Known Bugs
 
-* If implemented, the tip on folding will fold the last line of YAML frontmatter and the blank lines beneath it. Not critical, but ugly.
+* Strange automatic folding may happen upon editing or deleting lines inside a fenced code block. If this is the case, a hacky workaround is to just temporarily disable folding in the buffer with `set nofoldenable`, make the edits, then turn folding back on when you're done `set foldenable`.
 
 ## Todo
 
