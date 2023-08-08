@@ -186,10 +186,6 @@ let g:fastfold_fold_command_suffixes = ['x','X','a','A','o','O','c','C','r','R',
 let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
 let g:markdown_folding = 1
 
-" vim-markdown configuration
-" Disable vim-markdown folding (personal preference: I prefer FastFold + the default vim markdown folding)
-let g:vim_markdown_folding_disabled = 1
-
 " native vim folding settings
 " Set foldlevel to collapse level 2+ headings
 autocmd FileType markdown set foldlevel=1
